@@ -1,0 +1,17 @@
+-- AlterTable
+ALTER TABLE "forms" ADD COLUMN     "accentColor" TEXT NOT NULL DEFAULT '#030712',
+ADD COLUMN     "backgroundColor" TEXT NOT NULL DEFAULT '#ffffff',
+ADD COLUMN     "buttonBackgroundColor" TEXT NOT NULL DEFAULT '#030712',
+ADD COLUMN     "buttonBorderStyle" TEXT NOT NULL DEFAULT 'rounded',
+ADD COLUMN     "buttonTextColor" TEXT NOT NULL DEFAULT '#ffffff',
+ADD COLUMN     "closeMessageDescription" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "closeMessageTitle" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "headerDescription" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "headerImage" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "headerTitle" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "inputBorderStyle" TEXT NOT NULL DEFAULT 'rounded',
+ADD COLUMN     "logo" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "pageMode" TEXT NOT NULL DEFAULT 'compact',
+ADD COLUMN     "saveAnswers" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "showCustomClosedMessage" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "textColor" TEXT NOT NULL DEFAULT '#000000';

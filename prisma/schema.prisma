@@ -1,0 +1,287 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_URL")
+}
+
+generator client {
+    provider        = "prisma-client-js"
+    previewFeatures = ["relationJoins", "fullTextSearch"]
+}
+
+model Account {
+    id                String   @id @default(cuid())
+    type              String
+    provider          String
+    providerAccountId String
+    refresh_token     String?  @db.Text
+    access_token      String?  @db.Text
+    expires_at        Int?
+    expires_in        Int?
+    ext_expires_in    Int?
+    token_type        String?
+    scope             String?
+    id_token          String?  @db.Text
+    session_state     String?
+    userId            String
+    user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    createdAt         DateTime @default(now())
+    updatedAt         DateTime @updatedAt
+
+    @@unique([provider, providerAccountId])
+    @@map("accounts")
+}
+
+model Session {
+    id           String   @id @default(cuid())
+    sessionToken String   @unique
+    userId       String
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("sessions")
+}
+
+model User {
+    id            String      @id @default(cuid())
+    name          String?
+    email         String?     @unique
+    emailVerified DateTime?
+    image         String?
+    accounts      Account[]
+    sessions      Session[]
+    orgs          Org[]
+    orgMembers    OrgMember[]
+    createdAt     DateTime    @default(now())
+    updatedAt     DateTime    @updatedAt
+
+    @@map("users")
+}
+
+model VerificationToken {
+    id         String   @id @default(cuid())
+    identifier String
+    token      String   @unique
+    expires    DateTime
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    @@unique([identifier, token])
+    @@map("verificationTokens")
+}
+
+model ApiKey {
+    id         String    @id @default(cuid())
+    name       String?
+    key        String    @unique
+    partialKey String
+    scopes     String[]
+    expires    DateTime?
+    orgId      String
+    org        Org       @relation(fields: [orgId], references: [id], onDelete: Cascade)
+    createdAt  DateTime  @default(now())
+    updatedAt  DateTime  @updatedAt
+
+    @@map("apiKeys")
+}
+
+model Org {
+    id                       String      @id @default(cuid())
+    name                     String?
+    userId                   String
+    user                     User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+    stripeCustomerId         String?
+    stripeSubscriptionId     String?
+    stripeSubscriptionStatus String?
+    stripePlanNickname       String?
+    stripePlan               String?
+    stripeCancelAtPeriodEnd  Boolean?    @default(false)
+    stripeCurrentPeriodEnd   DateTime?
+    createdAt                DateTime    @default(now())
+    updatedAt                DateTime    @updatedAt
+    invites                  OrgInvite[]
+    members                  OrgMember[]
+    forms                    Form[]
+    apiKeys                  ApiKey[]
+    domains                  Domain[]
+
+    @@map("orgs")
+}
+
+model OrgInvite {
+    id        String   @id @default(cuid())
+    email     String
+    expires   DateTime
+    org       Org      @relation(fields: [orgId], references: [id], onDelete: Cascade)
+    orgId     String
+    createdAt DateTime @default(now())
+
+    @@unique([email, orgId])
+    @@map("orgInvites")
+}
+
+model OrgMember {
+    id        String   @id @default(cuid())
+    role      String   @default("member")
+    org       Org      @relation(fields: [orgId], references: [id], onDelete: Cascade)
+    orgId     String
+    userId    String
+    user      User     @relation(fields: [userId], references: [id])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([userId, orgId])
+    @@map("orgMembers")
+}
+
+model Form {
+    id                               String        @id @default(cuid())
+    name                             String
+    org                              Org           @relation(fields: [orgId], references: [id], onDelete: Cascade)
+    orgId                            String
+    removeFormboxBranding            Boolean       @default(false)
+    sendEmailNotifications           Boolean       @default(true)
+    emailsToNotify                   String[]
+    submissionStorageDuration        String        @default("60")
+    sendRespondantEmailNotifications Boolean       @default(false)
+    respondantEmailFromName          String        @default("")
+    respondantEmailSubject           String        @default("")
+    respondantEmailMessageHTML       String        @default("")
+    limitResponses                   Boolean       @default(false)
+    isClosed                         Boolean       @default(false)
+    maxResponses                     Int?
+    useCustomThankYouPage            Boolean       @default(false)
+    tpButtonText                     String        @default("")
+    tpButtonColor                    String        @default("#030712")
+    tpButtonBackgroundColor          String        @default("#f3f4f6")
+    tpBackgroundColor                String        @default("#ffffff")
+    tpTextColor                      String        @default("#030712")
+    tpHeader                         String        @default("")
+    tpMessage                        String        @default("")
+    tpButtonUrl                      String        @default("")
+    useCustomRedirect                Boolean       @default(false)
+    customSuccessUrl                 String        @default("")
+    webhookEnabled                   Boolean       @default(false)
+    webhookUrl                       String        @default("")
+    customHoneypot                   String        @default("")
+    googleRecaptchaEnabled           Boolean       @default(false)
+    googleRecaptchaSecretKey         String        @default("")
+    allowedDomains                   String        @default("")
+    type                             String        @default("endpoint")
+    fields                           Json          @default("[]")
+    headerTitle                      String        @default("")
+    headerDescription                String        @default("")
+    backgroundColor                  String        @default("#ffffff")
+    textColor                        String        @default("#000000")
+    buttonBackgroundColor            String        @default("#030712")
+    buttonTextColor                  String        @default("#ffffff")
+    accentColor                      String        @default("#030712")
+    buttonBorderStyle                String        @default("rounded")
+    inputBorderStyle                 String        @default("rounded")
+    showCustomClosedMessage          Boolean       @default(false)
+    closeMessageDescription          String        @default("")
+    closeMessageTitle                String        @default("")
+    submitButtonText                 String        @default("Submit")
+    pageMode                         String        @default("compact")
+    headerImage                      String        @default("")
+    logo                             String        @default("")
+    saveAnswers                      Boolean       @default(false)
+    submissions                      Submission[]
+    integrations                     Integration[]
+    createdAt                        DateTime      @default(now())
+    updatedAt                        DateTime      @updatedAt
+    files                            File[]
+
+    @@map("forms")
+}
+
+model Submission {
+    id        String   @id @default(cuid())
+    formId    String
+    isSpam    Boolean  @default(false)
+    form      Form?    @relation(fields: [formId], references: [id], onDelete: Cascade)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    answers   Answer[]
+    files     File[]
+
+    @@map("submissions")
+}
+
+model Answer {
+    id           String     @id @default(cuid())
+    label        String
+    value        String
+    submissionId String
+    submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+    createdAt    DateTime   @default(now())
+    updatedAt    DateTime   @updatedAt
+
+    @@map("answers")
+}
+
+model File {
+    id            String     @id @default(cuid())
+    name          String
+    type          String
+    size          Int
+    url           String
+    key           String
+    formFieldName String?
+    submissionId  String
+    submission    Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+    formId        String
+    form          Form       @relation(fields: [formId], references: [id], onDelete: Cascade)
+    createdAt     DateTime   @default(now())
+    updatedAt     DateTime   @updatedAt
+
+    @@map("files")
+}
+
+model Integration {
+    id              String   @id @default(cuid())
+    formId          String
+    orgId           String
+    connectionId    String?  @default("")
+    type            String
+    isEnabled       Boolean  @default(false)
+    spreadsheetId   String?  @default("")
+    excelWebUrl     String?  @default("")
+    slackTeamId     String?  @default("")
+    slackTeamName   String?  @default("")
+    slackChannelId  String?  @default("")
+    airtableBaseId  String?  @default("")
+    airtableTableId String?  @default("")
+    mailchimpListId String?  @default("")
+    mailchimpDC     String?  @default("")
+    webhookUrl      String?  @default("")
+    form            Form?    @relation(fields: [formId], references: [id], onDelete: Cascade)
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
+
+    @@map("integrations")
+}
+
+model Domain {
+    id        String       @id @default(cuid())
+    domainId  String
+    name      String       @unique
+    orgId     String
+    org       Org          @relation(fields: [orgId], references: [id], onDelete: Cascade)
+    status    DomainStatus
+    records   Json
+    createdAt DateTime     @default(now())
+    updatedAt DateTime     @updatedAt
+
+    @@map("domains")
+}
+
+enum DomainStatus {
+    not_started
+    pending
+    verified
+    failure
+}

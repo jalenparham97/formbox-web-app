@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="36px" height="36px" viewBox="0 0 36 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>webflow-mark-vector-blue</title>
+    <g id="Website-v3" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Landing-page" transform="translate(-1051.000000, -1516.000000)" fill-rule="nonzero">
+            <g id="webflow-mark-vector-blue" transform="translate(1051.000000, 1516.000000)">
+                <path d="M36,18 C36,27.9 27.9,36 18,36 C8.1,36 0,27.9 0,18 C0,8.1 8.1,0 18,0 C27.9,0 36,8.1 36,18 Z" id="Path" fill="#4353FF"></path>
+                <path d="M23.49,15.687 C23.49,15.687 21.933,20.565 21.816,20.979 C21.771,20.565 20.637,11.799 20.637,11.799 C17.982,11.799 16.569,13.68 15.822,15.687 C15.822,15.687 13.932,20.583 13.779,20.997 C13.77,20.61 13.491,15.741 13.491,15.741 C13.329,13.293 11.097,11.808 9.288,11.808 L11.466,25.092 C14.247,25.083 15.741,23.202 16.524,21.204 C16.524,21.204 18.189,16.884 18.261,16.686 C18.279,16.875 19.458,25.092 19.458,25.092 C22.239,25.092 23.742,23.328 24.552,21.402 L28.44,11.799 C25.686,11.799 24.237,13.68 23.49,15.687 Z" id="Path" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
